@@ -16,23 +16,40 @@ https://aws.github.io/aws-sdk-go-v2/docs/configuring-sdk/
 
 
 ```
+package main
+
 import (
+	"context"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"net/http"
+	"os"
 )
 
-os.SetEnv("AWS_REGION", "us-east-2")
-os.SetEnv("AWS_ACCESS_KEY_ID", "my_access_key_id")
-os.SetEnv("AWS_SECRET_ACCESS_KEY", "my_secret_access_key")
+func main() {
+	err := os.Setenv("AWS_REGION", "us-east-2")
+	if err != nil {
+		panic(err)
+	}
+	err = os.Setenv("AWS_ACCESS_KEY_ID", "my_access_key_id")
+	if err != nil {
+		panic(err)
+	}
+	err =os.Setenv("AWS_SECRET_ACCESS_KEY", "my_secret_access_key")
+	if err != nil {
+		panic(err)
+	}
 
-awsConfig, err := config.LoadDefaultConfig(ctx)
-if err != nil {
-    panic(err)
-}
-awsConfig.HTTPClient = new(http.Client)
+	awsConfig, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		panic(err)
+	}
+	awsConfig.HTTPClient = new(http.Client)
 
-// Can also call gethaws.CreateClient or gethaws.CreateRpcClient to just get one type of client
-client, rpcClient, err = gethaws.CreateClients(c.EvmProvider, awsConfig)
-if err != nil {
-    panic(err)
+	// Can also call gethaws.CreateClient or gethaws.CreateRpcClient to just get one type of client
+	client, rpcClient, err := gethaws.CreateClients(c.EvmProvider, awsConfig)
+	if err != nil {
+		panic(err)
+	}
 }
+
 ```
