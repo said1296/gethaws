@@ -17,6 +17,7 @@ func (e CreationError) Error() string {
 	return fmt.Sprintf("Failed to create client(s): %s", e.err.Error())
 }
 
+// CreateClient creates an ethclient.Client from an endpoint string and an aws.Config struct
 func CreateClient(endpoint string, config aws.Config) (*ethclient.Client, error) {
 	c, _, err := CreateClients(endpoint, config)
 	if err != nil {
@@ -26,12 +27,14 @@ func CreateClient(endpoint string, config aws.Config) (*ethclient.Client, error)
 	return c, nil
 }
 
+// CreateRpcClient creates an rpc.Client from an endpoint string and an aws.Config struct
 func CreateRpcClient(endpoint string, config aws.Config) (*rpc.Client, error) {
 	hc := new(http.Client)
 	hc.Transport = roundtripper.NewHttpRoundTripper(config)
 	return rpc.DialHTTPWithClient(endpoint, hc)
 }
 
+// CreateClients creates an ethclient.Client and an rpc.Client from an endpoint string and an aws.Config struct
 func CreateClients(endpoint string, config aws.Config) (*ethclient.Client, *rpc.Client, error) {
 	r, err := CreateRpcClient(endpoint, config)
 	if err != nil {

@@ -14,35 +14,32 @@ import (
 	"time"
 )
 
-type RoundTripperError struct {
-	err error
-}
-
-func (e RoundTripperError) Error() string {
-	return fmt.Sprintf("Rountripper error: %s", e.err.Error())
-}
-
+// httpRoundtripper holds the AWS config and satisfies the http.RoundTripper interface so that it can be used with an
+// http.Client
 type httpRoundtripper struct {
 	config aws.Config
 }
 
+// NewHttpRoundTripper creates an http.Client using an http.RoundTripper that handles AWS Managed Blockchain requests
 func NewHttpRoundTripper(cfg aws.Config) http.RoundTripper {
 	return httpRoundtripper{
 		config: cfg,
 	}
 }
 
+// RoundTrip gets AWS credentials from the aws.Config, adds the necessary AWS heahders to the request, performs the request,
+// and finally parses the gzip response from Managed Blockchain
 func (h httpRoundtripper) RoundTrip(request *http.Request) (*http.Response, error) {
 	credentials, err := h.config.Credentials.Retrieve(request.Context())
 	if err != nil {
-		return nil, RoundTripperError{err}
+		return nil, fmt.Errorf("failed to get credentials: %w", err)
 	}
 
 	internalRequest := request.Clone(request.Context())
 
 	hash, err := requestDataHash(request)
 	if err != nil {
-		return nil, RoundTripperError{err}
+		return nil, fmt.Errorf("failed to hash request for v4 signature: %w", err)
 	}
 
 	signer := v4.NewSigner()
@@ -56,18 +53,18 @@ func (h httpRoundtripper) RoundTrip(request *http.Request) (*http.Response, erro
 		time.Now(),
 	)
 	if err != nil {
-		return nil, RoundTripperError{err}
+		return nil, fmt.Errorf("failed v4 sign request: %w", err)
 	}
 
 	response, err := h.config.HTTPClient.Do(internalRequest)
 	if err != nil {
-		return nil, RoundTripperError{err}
+		return nil, fmt.Errorf("failed to perform Managed Blockchain request: %w", err)
 	}
 
 	if response.Header.Get("Content-Type") == "gzip" {
 		gzipReader, err := gzip.NewReader(base64.NewDecoder(base64.StdEncoding, response.Body))
 		if err != nil {
-			return nil, RoundTripperError{err}
+			return nil, fmt.Errorf("failed decode gzip content-type response: %w", err)
 		}
 
 		request.Header.Set("Content-Type", "application/json")
