@@ -75,6 +75,7 @@ func (h httpRoundtripper) RoundTrip(request *http.Request) (*http.Response, erro
 	return response, nil
 }
 
+// hashRequest gets the sha256 hash of the request body so that it can be signed for AWS V4 signature authentication
 func requestDataHash(req *http.Request) (string, error) {
 	var requestData []byte
 	if req.Body != nil {
@@ -93,6 +94,7 @@ func requestDataHash(req *http.Request) (string, error) {
 	return getSha256(requestData)
 }
 
+// getSha256 returns the sha256 hash of a byte array as a string
 func getSha256(input []byte) (string, error) {
 	hash := sha256.New()
 	if _, err := hash.Write(input); err != nil {
