@@ -21,18 +21,18 @@ import (
 )
 
 os.SetEnv("AWS_REGION", "us-east-2")
-os.SetEnv("AWS_ACCESS_KEY_ID", "my_acces_key_id")
+os.SetEnv("AWS_ACCESS_KEY_ID", "my_access_key_id")
 os.SetEnv("AWS_SECRET_ACCESS_KEY", "my_secret_access_key")
 
 awsConfig, err := config.LoadDefaultConfig(ctx)
 if err != nil {
-    return panic(err)
+    panic(err)
 }
 awsConfig.HTTPClient = new(http.Client)
 
 // Can also call gethaws.CreateClient or gethaws.CreateRpcClient to just get one type of client
 client, rpcClient, err = gethaws.CreateClients(c.EvmProvider, awsConfig)
 if err != nil {
-    return panic(err)
+    panic(err)
 }
 ```
