@@ -39,7 +39,7 @@ func main() {
     }
     
     // The most common use cases will only use the first returned client, the rpc client is for low level calls not 
-    // not implemented by geth.
+    // implemented by geth.
     // The client can also be created with a manually created AWS Config by calling gethaws.CreateClientsFromConfig
     client, rpcClient, err := gethaws.CreateClients("https://infura.io/api_key", awsConfig)
     if err != nil {
