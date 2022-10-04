@@ -10,10 +10,9 @@ Only works for HTTP client, will add support for other client types if people re
 
 # Usage
 
-The client creation functions receive an AWS Config object as defined in github.com/aws/aws-sdk-go-v2/config. Further configuration instructions available in:
+Clients are configured using the AWS Config struct found in github.com/aws/aws-sdk-go-v2/config. Further configuration instructions available in:
 
 https://aws.github.io/aws-sdk-go-v2/docs/configuring-sdk/
-
 
 ```
 package main
@@ -39,13 +38,9 @@ func main() {
 		panic(err)
 	}
 
-	awsConfig, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		panic(err)
-	}
-	awsConfig.HTTPClient = new(http.Client)
-
-	// Can also call gethaws.CreateClient or gethaws.CreateRpcClient to just get one type of client
+    // The most common use cases will only use the first returned client, the rpc client is for low level calls not 
+    // not implemented by geth.
+    // The client can also be created with a manually created AWS Config by calling gethaws.CreateClientsFromConfig
 	client, rpcClient, err := gethaws.CreateClients("https://infura.io/api_key", awsConfig)
 	if err != nil {
 		panic(err)

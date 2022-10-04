@@ -22,6 +22,10 @@ type httpRoundtripper struct {
 
 // NewHttpRoundTripper creates an http.Client using an http.RoundTripper that handles AWS Managed Blockchain requests
 func NewHttpRoundTripper(cfg aws.Config) http.RoundTripper {
+	if cfg.HTTPClient == nil {
+		cfg.HTTPClient = new(http.Client)
+	}
+
 	return httpRoundtripper{
 		config: cfg,
 	}
