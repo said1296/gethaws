@@ -46,7 +46,7 @@ func main() {
 	awsConfig.HTTPClient = new(http.Client)
 
 	// Can also call gethaws.CreateClient or gethaws.CreateRpcClient to just get one type of client
-	client, rpcClient, err := gethaws.CreateClients(c.EvmProvider, awsConfig)
+	client, rpcClient, err := gethaws.CreateClients("https://infura.io/api_key", awsConfig)
 	if err != nil {
 		panic(err)
 	}
