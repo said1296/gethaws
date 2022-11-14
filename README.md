@@ -45,7 +45,7 @@ func main() {
     
     // The most common use cases will only use the first returned client, the rpc client is for low level calls not 
     // implemented by geth.
-    // The clients can also be created with a manually created AWS Config by calling gethaws.CreateClientsFromConfig
+    // The clients can also be created with a manually created aws.Config by passing it instead of nil.
     client, rpcClient, err := gethaws.CreateClients(ctx.Background(), "https://ethereum.managedblockchain/1jsj1i23213nk32mo1", nil)
     if err != nil {
         panic(err)
